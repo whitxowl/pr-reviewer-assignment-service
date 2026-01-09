@@ -64,3 +64,31 @@ func (s *Storage) UpsertUsers(ctx context.Context, users []*domain.User) error {
 
 	return nil
 }
+
+func (s *Storage) GetUsersByTeamName(ctx context.Context, teamName string) ([]*domain.User, error) {
+	const op = "storage.user.GetUsersByTeamName"
+
+	const query = "SELECT user_id, username, is_active FROM users WHERE team_name = $1"
+	rows, err := s.Db.Query(ctx, query, teamName)
+
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	var users []*domain.User
+	for rows.Next() {
+		var user domain.User
+		err := rows.Scan(&user.UserID, &user.Username, &user.IsActive)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return users, nil
+}

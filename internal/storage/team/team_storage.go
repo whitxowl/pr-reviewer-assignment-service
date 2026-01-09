@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/domain"
 	storageErr "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/storage/errors"
 	pg "github.com/whitxowl/pr-reviewer-assignment-service.git/pkg/postgres"
 )
@@ -35,6 +34,16 @@ func (s *Storage) CreateTeam(ctx context.Context, teamName string) error {
 	return nil
 }
 
-func (s *Storage) GetTeamByName(ctx context.Context, teamName string) (*domain.Team, error) {
-	return nil, nil
+func (s *Storage) TeamExists(ctx context.Context, teamName string) (bool, error) {
+	const op = "storage.team.TeamExists"
+
+	const query = "SELECT EXISTS(SELECT 1 FROM teams WHERE team_name = $1)"
+
+	var exists bool
+	err := s.Db.QueryRow(ctx, query, teamName).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return exists, nil
 }

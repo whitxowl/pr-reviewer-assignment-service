@@ -73,3 +73,25 @@ func ToTeamResponse(team *domain.Team) CreateTeamResponse {
 
 	return response
 }
+
+type GetTeamResponse struct {
+	TeamName string               `json:"team_name"`
+	Members  []TeamMemberResponse `json:"members"`
+}
+
+func ToGetTeamResponse(team *domain.Team) GetTeamResponse {
+	response := GetTeamResponse{
+		TeamName: team.TeamName,
+		Members:  make([]TeamMemberResponse, len(team.Members)),
+	}
+
+	for i, member := range team.Members {
+		response.Members[i] = TeamMemberResponse{
+			UserID:   member.UserID,
+			Username: member.Username,
+			IsActive: member.IsActive,
+		}
+	}
+
+	return response
+}

@@ -9,6 +9,7 @@ import (
 
 type TeamService interface {
 	CreateTeam(ctx context.Context, team domain.Team) error
+	GetTeam(ctx context.Context, teamName string) (*domain.Team, error)
 }
 
 type Handler struct {
@@ -25,5 +26,6 @@ func (h *Handler) RegisterRoutes(router *gin.RouterGroup) {
 	teamGroup := router.Group("/team")
 	{
 		teamGroup.POST("/add", h.add)
+		teamGroup.GET("/get", h.get)
 	}
 }

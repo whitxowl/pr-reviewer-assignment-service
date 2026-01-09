@@ -13,10 +13,12 @@ import (
 
 type TeamStorage interface {
 	CreateTeam(ctx context.Context, teamName string) error
+	TeamExists(ctx context.Context, teamName string) (bool, error)
 }
 
 type UserStorage interface {
 	UpsertUsers(ctx context.Context, users []*domain.User) error
+	GetUsersByTeamName(ctx context.Context, teamName string) ([]*domain.User, error)
 }
 
 type Service struct {
@@ -58,4 +60,31 @@ func (s *Service) CreateTeam(ctx context.Context, team domain.Team) error {
 	log.InfoContext(ctx, "team created successfully")
 
 	return nil
+}
+
+func (s *Service) GetTeam(ctx context.Context, teamName string) (*domain.Team, error) {
+	const op = "service.team.GetTeam"
+
+	log := s.log.With(
+		slog.String("op", op),
+		slog.String("teamName", teamName),
+	)
+
+	exists, err := s.teamStorage.TeamExists(ctx, teamName)
+	if err != nil {
+		log.ErrorContext(ctx, "error checking if team exists", "error", err)
+	}
+	if !exists {
+		return nil, serviceErr.ErrTeamNotFound
+	}
+
+	users, err := s.userStorage.GetUsersByTeamName(ctx, teamName)
+	if err != nil {
+		log.ErrorContext(ctx, "error getting users", "error", err)
+	}
+
+	return &domain.Team{
+		TeamName: teamName,
+		Members:  users,
+	}, nil
 }
