@@ -63,8 +63,8 @@ func (h *Handler) get(c *gin.Context) {
 	if errors.Is(err, serviceErr.ErrTeamNotFound) {
 		c.JSON(http.StatusNotFound, ErrorResponse{
 			Error: ErrorDetail{
-				Code:    "TEAM_NOT_FOUND",
-				Message: teamName + " not found",
+				Code:    "NOT_FOUND",
+				Message: "resource not found",
 			},
 		})
 		return
