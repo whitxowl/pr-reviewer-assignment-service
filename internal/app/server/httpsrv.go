@@ -11,23 +11,32 @@ import (
 
 	"github.com/gin-gonic/gin"
 	teamHandler "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/api/v1/team"
+	userHandler "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/api/v1/user"
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/config"
 	teamService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team"
+	userService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user"
 )
 
 type Server struct {
 	log         *slog.Logger
 	teamService *teamService.Service
+	userService *userService.Service
 	cfg         *config.HTTPServer
 
 	mu     sync.Mutex
 	server *http.Server
 }
 
-func New(log *slog.Logger, teamService *teamService.Service, cfg config.HTTPServer) *Server {
+func New(
+	log *slog.Logger,
+	teamService *teamService.Service,
+	userService *userService.Service,
+	cfg config.HTTPServer,
+) *Server {
 	return &Server{
 		log:         log,
 		teamService: teamService,
+		userService: userService,
 		cfg:         &cfg,
 	}
 }
@@ -49,6 +58,7 @@ func (s *Server) Run(ctx context.Context) error {
 	log.InfoContext(ctx, "starting HTTP server")
 
 	teamHdlr := teamHandler.New(s.teamService)
+	userHdlr := userHandler.New(s.userService)
 
 	router := gin.New()
 	router.Use(gin.Recovery())
@@ -61,6 +71,7 @@ func (s *Server) Run(ctx context.Context) error {
 	base := router.Group("/")
 
 	teamHdlr.RegisterRoutes(base)
+	userHdlr.RegisterRoutes(base)
 
 	srv := &http.Server{
 		Addr:         s.cfg.Address,

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/domain"
+	storageErr "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/storage/errors"
 	pg "github.com/whitxowl/pr-reviewer-assignment-service.git/pkg/postgres"
 )
 
@@ -91,4 +92,27 @@ func (s *Storage) GetUsersByTeamName(ctx context.Context, teamName string) ([]*d
 	}
 
 	return users, nil
+}
+
+func (s *Storage) SetIsActive(ctx context.Context, userID string, isActive bool) (*domain.User, error) {
+	const op = "storage.user.SetIsActive"
+
+	const query = "UPDATE users SET is_active = $1 WHERE user_id = $2 RETURNING user_id, username, team_name, is_active"
+
+	var user domain.User
+
+	err := s.Db.QueryRow(ctx, query, isActive, userID).Scan(
+		&user.UserID,
+		&user.Username,
+		&user.TeamName,
+		&user.IsActive,
+	)
+	if pg.IsNoRowsError(err) {
+		return nil, fmt.Errorf("%s: %w", op, storageErr.ErrUserNotFound)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return &user, nil
 }

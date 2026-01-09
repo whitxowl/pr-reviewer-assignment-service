@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61fb009f-6eda-4529-84d7-75fa114f3332" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/v1/team/dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/team/dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/v1/team/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/team/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/v1/team/team.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/team/team.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/service/team/team_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/team/team_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/storage/errors/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/errors/errors.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/storage/team/team_storage.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/team/team_storage.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/server/httpsrv.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/server/httpsrv.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/storage/user/user_storage.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/user/user_storage.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

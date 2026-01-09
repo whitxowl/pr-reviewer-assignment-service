@@ -7,6 +7,7 @@ import (
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/app/server"
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/config"
 	teamService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team"
+	userService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user"
 	teamStorage "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/storage/team"
 	userStorage "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/storage/user"
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/pkg/postgres"
@@ -26,8 +27,9 @@ func New(ctx context.Context, log *slog.Logger, cfg *config.Config) *App {
 	userStore := userStorage.New(pgPool)
 
 	teamSvc := teamService.New(log.WithGroup("service.team"), teamStore, userStore)
+	userSvc := userService.New(log.WithGroup("service.user"), userStore)
 
-	srv := server.New(log, teamSvc, cfg.HTTPServer)
+	srv := server.New(log, teamSvc, userSvc, cfg.HTTPServer)
 
 	return &App{
 		Srv: srv,
