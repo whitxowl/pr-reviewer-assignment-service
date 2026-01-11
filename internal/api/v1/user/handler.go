@@ -9,6 +9,7 @@ import (
 
 type UserService interface {
 	SetIsActive(ctx context.Context, userID string, isActive bool) (*domain.User, error)
+	GetPRsReviewedBy(ctx context.Context, userID string) ([]*domain.PullRequest, error)
 }
 
 type Handler struct {
@@ -25,5 +26,6 @@ func (h *Handler) RegisterRoutes(router *gin.RouterGroup) {
 	usersGroup := router.Group("/users")
 	{
 		usersGroup.POST("/setIsActive", h.setIsActive)
+		usersGroup.GET("/getReview", h.getReview)
 	}
 }

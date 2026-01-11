@@ -44,3 +44,31 @@ func (h *Handler) setIsActive(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func (h *Handler) getReview(c *gin.Context) {
+	userID := c.Query("user_id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error: ErrorDetail{
+				Code:    "INVALID_REQUEST",
+				Message: "invalid request body: team_name is required",
+			},
+		})
+		return
+	}
+
+	prs, err := h.userService.GetPRsReviewedBy(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{
+			Error: ErrorDetail{
+				Code:    "INTERNAL_ERROR",
+				Message: "internal server error",
+			},
+		})
+		return
+	}
+
+	response := ToGetReviewedResponse(userID, prs)
+
+	c.JSON(http.StatusOK, response)
+}
