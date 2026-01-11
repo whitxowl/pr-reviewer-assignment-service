@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
     is_active BOOLEAN DEFAULT TRUE,
 
     CONSTRAINT fk_user_team FOREIGN KEY (team_name) REFERENCES teams(team_name) ON DELETE SET NULL
-    );
+);
 
 CREATE TABLE IF NOT EXISTS pull_requests
 (
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS pull_requests
     merged_at         TIMESTAMP NULL,
 
     CONSTRAINT fk_pr_author FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE SET NULL
-    );
+);
 
 CREATE TABLE IF NOT EXISTS pull_request_reviewers (
                                                       pull_request_id TEXT NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS pull_request_reviewers (
 
     CONSTRAINT fk_pr FOREIGN KEY (pull_request_id) REFERENCES pull_requests(pull_request_id) ON DELETE CASCADE,
     CONSTRAINT fk_reviewer FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-    );
+);
 
 -- +goose Down
 DROP TABLE IF EXISTS pull_request_reviewers;

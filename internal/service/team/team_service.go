@@ -73,6 +73,7 @@ func (s *Service) GetTeam(ctx context.Context, teamName string) (*domain.Team, e
 	exists, err := s.teamStorage.TeamExists(ctx, teamName)
 	if err != nil {
 		log.ErrorContext(ctx, "error checking if team exists", "error", err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	if !exists {
 		return nil, serviceErr.ErrTeamNotFound
@@ -81,6 +82,7 @@ func (s *Service) GetTeam(ctx context.Context, teamName string) (*domain.Team, e
 	users, err := s.userStorage.GetUsersByTeamName(ctx, teamName)
 	if err != nil {
 		log.ErrorContext(ctx, "error getting users", "error", err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
 	return &domain.Team{

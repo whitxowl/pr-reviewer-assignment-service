@@ -70,8 +70,8 @@ func (s *Storage) GetUsersByTeamName(ctx context.Context, teamName string) ([]*d
 	const op = "storage.user.GetUsersByTeamName"
 
 	const query = "SELECT user_id, username, is_active FROM users WHERE team_name = $1"
-	rows, err := s.Db.Query(ctx, query, teamName)
 
+	rows, err := s.Db.Query(ctx, query, teamName)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
