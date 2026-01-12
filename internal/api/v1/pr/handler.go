@@ -9,6 +9,7 @@ import (
 
 type PRService interface {
 	CreatePR(ctx context.Context, prID string, prName string, authorID string) (*domain.PullRequest, error)
+	SetStatusMerged(ctx context.Context, prID string) (*domain.PullRequest, error)
 }
 
 type Handler struct {
@@ -25,5 +26,6 @@ func (h *Handler) RegisterRoutes(router *gin.RouterGroup) {
 	prGroup := router.Group("/pullRequest")
 	{
 		prGroup.POST("create", h.create)
+		prGroup.POST("merge", h.merge)
 	}
 }

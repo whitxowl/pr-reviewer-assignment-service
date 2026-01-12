@@ -19,6 +19,7 @@ type UserStorage interface {
 type PRStorage interface {
 	CreatePR(ctx context.Context, prID string, prName string, authorID string) error
 	AssignReviewers(ctx context.Context, prID string, reviewersIDs []string) error
+	SetStatusMerged(ctx context.Context, prID string) (*domain.PullRequest, error)
 }
 
 type Service struct {
@@ -42,6 +43,7 @@ func (s *Service) CreatePR(
 ) (*domain.PullRequest, error) {
 	const op = "service.pr.CreatePR"
 
+	// TODO: remove to service config
 	const (
 		status = "OPEN"
 		limit  = 2
@@ -60,11 +62,13 @@ func (s *Service) CreatePR(
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	if !userCorrect {
+		log.DebugContext(ctx, "author or team not found", "error", err)
 		return nil, serviceErr.ErrAuthorNotCorrect
 	}
 
 	err = s.prStorage.CreatePR(ctx, prID, prName, authorID)
 	if errors.Is(err, storageErr.ErrPRExists) {
+		log.DebugContext(ctx, "pr already exists", "error", err)
 		return nil, serviceErr.ErrPRExists
 	}
 	if err != nil {
@@ -74,7 +78,7 @@ func (s *Service) CreatePR(
 
 	reviewers, err := s.userStorage.GetPotentialReviewersIDs(ctx, authorID, prID, limit)
 	if err != nil {
-		log.ErrorContext(ctx, "error creating pr", "error", err)
+		log.ErrorContext(ctx, "error finding potential reviewers", "error", err)
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -91,4 +95,25 @@ func (s *Service) CreatePR(
 		Status:            status,
 		AssignedReviewers: reviewers,
 	}, nil
+}
+
+func (s *Service) SetStatusMerged(ctx context.Context, prID string) (*domain.PullRequest, error) {
+	const op = "service.SetStatusMerged"
+
+	log := s.log.With(
+		slog.String("op", op),
+		slog.String("prID", prID),
+	)
+
+	pr, err := s.prStorage.SetStatusMerged(ctx, prID)
+	if errors.Is(err, storageErr.ErrPRNotFound) {
+		log.DebugContext(ctx, "pr not found", "error", err)
+		return nil, serviceErr.ErrPRNotFound
+	}
+	if err != nil {
+		log.ErrorContext(ctx, "error setting status merged", "error", err)
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return pr, nil
 }

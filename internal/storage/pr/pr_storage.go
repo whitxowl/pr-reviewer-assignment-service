@@ -40,8 +40,7 @@ func (s *Storage) GetPRsReviewedBy(ctx context.Context, userID string) ([]*domai
 	var prs []*domain.PullRequest
 	for rows.Next() {
 		var pr domain.PullRequest
-		err := rows.Scan(&pr.PullRequestID, &pr.PullRequestName, &pr.AuthorID, &pr.Status)
-		if err != nil {
+		if err := rows.Scan(&pr.PullRequestID, &pr.PullRequestName, &pr.AuthorID, &pr.Status); err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
 		prs = append(prs, &pr)
@@ -113,4 +112,75 @@ func (s *Storage) AssignReviewers(ctx context.Context, prID string, reviewersIDs
 	}
 
 	return nil
+}
+
+func (s *Storage) SetStatusMerged(ctx context.Context, prID string) (*domain.PullRequest, error) {
+	const op = "storage.pr.SetStatusMerged"
+
+	const query = `
+        UPDATE pull_requests 
+        SET status = 'MERGED', 
+            merged_at = COALESCE(merged_at, NOW())
+        WHERE pull_request_id = $1
+        RETURNING pull_request_id, 
+                  pull_request_name, 
+                  author_id, 
+                  status,
+                  merged_at
+    `
+
+	var pr domain.PullRequest
+	err := s.Db.QueryRow(ctx, query, prID).Scan(
+		&pr.PullRequestID,
+		&pr.PullRequestName,
+		&pr.AuthorID,
+		&pr.Status,
+		&pr.MergedAt,
+	)
+	if pg.IsNoRowsError(err) {
+		return nil, fmt.Errorf("%s: %w", op, storageErr.ErrPRNotFound)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	reviewers, err := s.getReviewersByPRID(ctx, prID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	pr.AssignedReviewers = reviewers
+
+	return &pr, nil
+}
+
+func (s *Storage) getReviewersByPRID(ctx context.Context, prID string) ([]string, error) {
+	const op = "storage.pr.GetReviewersByPRID"
+
+	const query = `
+        SELECT user_id 
+        FROM pull_request_reviewers 
+        WHERE pull_request_id = $1
+    `
+
+	rows, err := s.Db.Query(ctx, query, prID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	var reviewers []string
+	for rows.Next() {
+		var userID string
+		if err := rows.Scan(&userID); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		reviewers = append(reviewers, userID)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return reviewers, nil
 }

@@ -1,6 +1,10 @@
 package pr
 
-import "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/domain"
+import (
+	"time"
+
+	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/domain"
+)
 
 type CreatePRRequest struct {
 	PRID     string `json:"pull_request_id" binding:"required"`
@@ -20,6 +24,23 @@ type PRResponse struct {
 	Reviewers []string `json:"assigned_reviewers"`
 }
 
+type MergeRequest struct {
+	PRID string `json:"pull_request_id" binding:"required"`
+}
+
+type MergeResponse struct {
+	PR PRMergedResponse `json:"pr"`
+}
+
+type PRMergedResponse struct {
+	PRID      string     `json:"pull_request_id"`
+	PRName    string     `json:"pull_request_name"`
+	AuthorID  string     `json:"author_id"`
+	Status    string     `json:"status"`
+	Reviewers []string   `json:"assigned_reviewers"`
+	MergedAt  *time.Time `json:"merged_at"`
+}
+
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
 }
@@ -37,6 +58,19 @@ func ToCreatePRResponse(pr *domain.PullRequest) CreatePRResponse {
 			AuthorID:  pr.AuthorID,
 			Status:    pr.Status,
 			Reviewers: pr.AssignedReviewers,
+		},
+	}
+}
+
+func ToMergeResponse(pr *domain.PullRequest) MergeResponse {
+	return MergeResponse{
+		PR: PRMergedResponse{
+			PRID:      pr.PullRequestID,
+			PRName:    pr.PullRequestName,
+			AuthorID:  pr.AuthorID,
+			Status:    pr.Status,
+			Reviewers: pr.AssignedReviewers,
+			MergedAt:  pr.MergedAt,
 		},
 	}
 }
