@@ -6,11 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="61fb009f-6eda-4529-84d7-75fa114f3332" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/v1/user/dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/user/dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/v1/user/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/user/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/v1/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/user/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/service/user/user_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/user/user_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/server/httpsrv.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/server/httpsrv.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/errors/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/errors/errors.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/pr/pr_storage.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/pr/pr_storage.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/user/user_storage.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/user/user_storage.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,8 +131,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-gosdk-72a9cf600ed8-448e06e64ec5-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-253.28294.337" />
-        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-GO-253.28294.337" />
+        <option value="bundled-gosdk-72a9cf600ed8-dfa3e7267ae0-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-253.29346.255" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-GO-253.29346.255" />
       </set>
     </attachedChunks>
   </component>

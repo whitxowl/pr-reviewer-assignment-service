@@ -6,6 +6,7 @@ import (
 
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/app/server"
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/config"
+	prService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr"
 	teamService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team"
 	userService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user"
 	prStorage "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/storage/pr"
@@ -30,8 +31,9 @@ func New(ctx context.Context, log *slog.Logger, cfg *config.Config) *App {
 
 	teamSvc := teamService.New(log.WithGroup("service.team"), teamStore, userStore)
 	userSvc := userService.New(log.WithGroup("service.user"), userStore, prStore)
+	prSvc := prService.New(log.WithGroup("service.pr"), userStore, prStore)
 
-	srv := server.New(log, teamSvc, userSvc, cfg.HTTPServer)
+	srv := server.New(log, teamSvc, userSvc, prSvc, cfg.HTTPServer)
 
 	return &App{
 		Srv: srv,

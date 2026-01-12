@@ -10,9 +10,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	prHandler "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/api/v1/pr"
 	teamHandler "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/api/v1/team"
 	userHandler "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/api/v1/user"
 	"github.com/whitxowl/pr-reviewer-assignment-service.git/internal/config"
+	prService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr"
 	teamService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team"
 	userService "github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user"
 )
@@ -21,6 +23,7 @@ type Server struct {
 	log         *slog.Logger
 	teamService *teamService.Service
 	userService *userService.Service
+	prService   *prService.Service
 	cfg         *config.HTTPServer
 
 	mu     sync.Mutex
@@ -31,12 +34,14 @@ func New(
 	log *slog.Logger,
 	teamService *teamService.Service,
 	userService *userService.Service,
+	prService *prService.Service,
 	cfg config.HTTPServer,
 ) *Server {
 	return &Server{
 		log:         log,
 		teamService: teamService,
 		userService: userService,
+		prService:   prService,
 		cfg:         &cfg,
 	}
 }
@@ -59,6 +64,7 @@ func (s *Server) Run(ctx context.Context) error {
 
 	teamHdlr := teamHandler.New(s.teamService)
 	userHdlr := userHandler.New(s.userService)
+	prHdlr := prHandler.New(s.prService)
 
 	router := gin.New()
 	router.Use(gin.Recovery())
@@ -72,6 +78,7 @@ func (s *Server) Run(ctx context.Context) error {
 
 	teamHdlr.RegisterRoutes(base)
 	userHdlr.RegisterRoutes(base)
+	prHdlr.RegisterRoutes(base)
 
 	srv := &http.Server{
 		Addr:         s.cfg.Address,

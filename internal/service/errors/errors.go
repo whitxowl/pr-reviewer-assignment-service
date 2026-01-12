@@ -12,4 +12,6 @@ var (
 	ErrPRNotFound      = errors.New("pull request not found")
 	ErrPRAlreadyMerged = errors.New("pull request is already merged")
 	ErrPRNoCandidates  = errors.New("no candidates available for reviewer reassignment")
+
+	ErrAuthorNotCorrect = errors.New("author is not found or has no team")
 )

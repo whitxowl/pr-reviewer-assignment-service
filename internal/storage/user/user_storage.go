@@ -116,3 +116,61 @@ func (s *Storage) SetIsActive(ctx context.Context, userID string, isActive bool)
 
 	return &user, nil
 }
+
+func (s *Storage) UserExistsAndHasTeam(ctx context.Context, userID string) (bool, error) {
+	const op = "storage.user.UserExistsAndHasTeam"
+
+	const query = "SELECT EXISTS(SELECT 1 FROM users WHERE user_id = $1 AND team_name IS NOT NULL)"
+
+	var exists bool
+	err := s.Db.QueryRow(ctx, query, userID).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return exists, nil
+}
+
+func (s *Storage) GetPotentialReviewersIDs(
+	ctx context.Context,
+	authorID string,
+	userID string, // in case of reassignment
+	limit int,
+) ([]string, error) {
+	const op = "storage.user.GetPotentialReviewersIDs"
+
+	const query = `
+        SELECT u2.user_id
+        FROM users u1
+        JOIN users u2 ON u1.team_name = u2.team_name
+        WHERE u1.user_id = $1
+          AND u2.user_id != $1
+          AND u2.user_id != $2
+          AND u2.is_active = true
+          AND u1.team_name IS NOT NULL
+        ORDER BY RANDOM()
+        LIMIT $3
+    `
+
+	rows, err := s.Db.Query(ctx, query, authorID, userID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	var ids []string
+	for rows.Next() {
+		var id string
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		ids = append(ids, id)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return ids, nil
+}
