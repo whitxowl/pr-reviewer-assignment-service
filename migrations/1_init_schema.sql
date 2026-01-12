@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS pull_requests
     created_at        TIMESTAMP NOT NULL DEFAULT NOW(),
     merged_at         TIMESTAMP NULL,
 
-    CONSTRAINT fk_pr_author FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE SET NULL
+    CONSTRAINT fk_pr_author FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS pull_request_reviewers (
