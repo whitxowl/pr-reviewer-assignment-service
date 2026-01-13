@@ -8,9 +8,10 @@ var (
 
 	ErrUserNotFound = errors.New("user not found")
 
-	ErrPRExists        = errors.New("pull request already exists")
-	ErrPRNotFound      = errors.New("pull request not found")
-	ErrPRAlreadyMerged = errors.New("pull request is already merged")
+	ErrPRExists   = errors.New("pull request already exists")
+	ErrPRNotFound = errors.New("pull request not found")
+	ErrPRMerged   = errors.New("pull request is already merged")
 
 	ErrAuthorNotCorrect = errors.New("author is not found or has no team")
+	ErrReviewerNotFound = errors.New("reviewer not found")
 )

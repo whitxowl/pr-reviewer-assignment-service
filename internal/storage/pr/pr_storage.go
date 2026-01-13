@@ -20,6 +20,10 @@ func New(db pg.DB) *Storage {
 	}
 }
 
+const (
+	statusMerged = "MERGED"
+)
+
 func (s *Storage) GetPRsReviewedBy(ctx context.Context, userID string) ([]*domain.PullRequest, error) {
 	const op = "storage.pr.GetPRsReviewedBy"
 
@@ -154,6 +158,170 @@ func (s *Storage) SetStatusMerged(ctx context.Context, prID string) (*domain.Pul
 	return &pr, nil
 }
 
+func (s *Storage) GetPRAuthorID(ctx context.Context, prID string) (string, error) {
+	const op = "storage.pr.GetPRAuthorID"
+
+	const query = "SELECT author_id FROM pull_requests WHERE pull_request_id = $1"
+
+	var authorID string
+	err := s.Db.QueryRow(ctx, query, prID).Scan(&authorID)
+	if pg.IsNoRowsError(err) {
+		return "", fmt.Errorf("%s: %w", op, storageErr.ErrPRNotFound)
+	}
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	return authorID, nil
+}
+
+func (s *Storage) ReassignReviewer(
+	ctx context.Context,
+	prID string,
+	oldReviewerID string,
+	newReviewerID string,
+) (*domain.PullRequest, error) {
+	const op = "storage.pr.ReassignReviewer"
+
+	tx, err := s.Db.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := s.checkPRStatus(ctx, tx, prID); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if err := s.removeReviewerTx(ctx, tx, prID, oldReviewerID); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if newReviewerID != "" {
+		if err := s.addReviewerTx(ctx, tx, prID, newReviewerID); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+	}
+
+	pr, err := s.getPRWithReviewersTx(ctx, tx, prID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if err = tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return pr, nil
+}
+
+func (s *Storage) checkPRStatus(ctx context.Context, tx pg.Tx, prID string) error {
+	const op = "storage.pr.checkPRStatus"
+
+	const query = "SELECT status FROM pull_requests WHERE pull_request_id = $1"
+
+	var status string
+	err := tx.QueryRow(ctx, query, prID).Scan(&status)
+	if pg.IsNoRowsError(err) {
+		return fmt.Errorf("%s: %w", op, storageErr.ErrPRNotFound)
+	}
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	if status == statusMerged {
+		return fmt.Errorf("%s: %w", op, storageErr.ErrPRMerged)
+	}
+
+	return nil
+}
+
+func (s *Storage) removeReviewerTx(ctx context.Context, tx pg.Tx, prID string, reviewerID string) error {
+	const op = "storage.pr.removeReviewerTx"
+
+	const query = `
+        DELETE FROM pull_request_reviewers
+        WHERE pull_request_id = $1 AND user_id = $2
+    `
+
+	result, err := tx.Exec(ctx, query, prID, reviewerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	if result.RowsAffected() == 0 {
+		return fmt.Errorf("%s: %w", op, storageErr.ErrReviewerNotFound)
+	}
+
+	return nil
+}
+
+func (s *Storage) addReviewerTx(ctx context.Context, tx pg.Tx, prID string, reviewerID string) error {
+	const op = "storage.pr.addReviewerTx"
+
+	const query = `
+        INSERT INTO pull_request_reviewers (pull_request_id, user_id)
+        VALUES ($1, $2)
+    `
+
+	_, err := tx.Exec(ctx, query, prID, reviewerID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
+
+func (s *Storage) getPRWithReviewersTx(ctx context.Context, tx pg.Tx, prID string) (*domain.PullRequest, error) {
+	const op = "storage.pr.getPRWithReviewersTx"
+
+	const query = `
+        SELECT pull_request_id, pull_request_name, author_id, status
+        FROM pull_requests
+        WHERE pull_request_id = $1
+    `
+
+	var pr domain.PullRequest
+	err := tx.QueryRow(ctx, query, prID).Scan(
+		&pr.PullRequestID,
+		&pr.PullRequestName,
+		&pr.AuthorID,
+		&pr.Status,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	const getReviewersQuery = `
+        SELECT user_id
+        FROM pull_request_reviewers
+        WHERE pull_request_id = $1
+    `
+
+	rows, err := tx.Query(ctx, getReviewersQuery, prID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	var reviewers []string
+	for rows.Next() {
+		var userID string
+		if err := rows.Scan(&userID); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		reviewers = append(reviewers, userID)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	pr.AssignedReviewers = reviewers
+
+	return &pr, nil
+}
+
 func (s *Storage) getReviewersByPRID(ctx context.Context, prID string) ([]string, error) {
 	const op = "storage.pr.GetReviewersByPRID"
 
@@ -183,21 +351,4 @@ func (s *Storage) getReviewersByPRID(ctx context.Context, prID string) ([]string
 	}
 
 	return reviewers, nil
-}
-
-func (s *Storage) getPRAuthorID(ctx context.Context, prID string) (string, error) {
-	const op = "storage.pr.GetPRAuthorID"
-
-	const query = "SELECT author_id FROM pull_requests WHERE pull_request_id = $1"
-
-	var authorID string
-	err := s.Db.QueryRow(ctx, query, prID).Scan(&authorID)
-	if pg.IsNoRowsError(err) {
-		return "", fmt.Errorf("%s: %w", op, storageErr.ErrPRNotFound)
-	}
-	if err != nil {
-		return "", fmt.Errorf("%s: %w", op, err)
-	}
-
-	return authorID, nil
 }

@@ -6,9 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="61fb009f-6eda-4529-84d7-75fa114f3332" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/api/v1/pr/dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/pr/dto.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/api/v1/pr/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/pr/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/api/v1/pr/pr.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/v1/pr/pr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/errors/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/errors/errors.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/pr/pr_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/pr/pr_service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/storage/errors/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/errors/errors.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/storage/pr/pr_storage.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/pr/pr_storage.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/postgres/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/postgres/postgres.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

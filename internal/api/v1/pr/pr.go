@@ -90,3 +90,49 @@ func (h *Handler) merge(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func (h *Handler) reassign(c *gin.Context) {
+	var req ReassignRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error: ErrorDetail{
+				Code:    "INVALID_REQUEST",
+				Message: "invalid request body: " + err.Error(),
+			},
+		})
+		return
+	}
+
+	pr, newReviewerID, err := h.prService.ReassignReviewer(c.Request.Context(), req.PRID, req.OldReviewerID)
+	if errors.Is(err, serviceErr.ErrPRNotFound) || errors.Is(err, serviceErr.ErrReviewerNotFound) {
+		c.JSON(http.StatusNotFound, ErrorResponse{
+			Error: ErrorDetail{
+				Code:    "NOT_FOUND",
+				Message: "resource not found",
+			},
+		})
+		return
+	}
+	if errors.Is(err, serviceErr.ErrPRMerged) {
+		c.JSON(http.StatusConflict, ErrorResponse{
+			Error: ErrorDetail{
+				Code:    "PR_MERGED",
+				Message: "cannot reassign on merged PR",
+			},
+		})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{
+			Error: ErrorDetail{
+				Code:    "INTERNAL_ERROR",
+				Message: "internal server error",
+			},
+		})
+		return
+	}
+
+	response := ToReassignResponse(pr, newReviewerID)
+
+	c.JSON(http.StatusOK, response)
+}

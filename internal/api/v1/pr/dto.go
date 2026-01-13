@@ -41,6 +41,24 @@ type PRMergedResponse struct {
 	MergedAt  *time.Time `json:"merged_at"`
 }
 
+type ReassignRequest struct {
+	PRID          string `json:"pull_request_id" binding:"required"`
+	OldReviewerID string `json:"old_reviewer_id" binding:"required"`
+}
+
+type ReassignResponse struct {
+	PR PRReassignResponse `json:"pr"`
+}
+
+type PRReassignResponse struct {
+	PRID       string   `json:"pull_request_id"`
+	PRName     string   `json:"pull_request_name"`
+	AuthorID   string   `json:"author_id"`
+	Status     string   `json:"status"`
+	Reviewers  []string `json:"assigned_reviewers"`
+	ReplacedBy string   `json:"replaced_by"`
+}
+
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
 }
@@ -71,6 +89,19 @@ func ToMergeResponse(pr *domain.PullRequest) MergeResponse {
 			Status:    pr.Status,
 			Reviewers: pr.AssignedReviewers,
 			MergedAt:  pr.MergedAt,
+		},
+	}
+}
+
+func ToReassignResponse(pr *domain.PullRequest, newReviewerID string) ReassignResponse {
+	return ReassignResponse{
+		PR: PRReassignResponse{
+			PRID:       pr.PullRequestID,
+			PRName:     pr.PullRequestName,
+			AuthorID:   pr.AuthorID,
+			Status:     pr.Status,
+			Reviewers:  pr.AssignedReviewers,
+			ReplacedBy: newReviewerID,
 		},
 	}
 }
