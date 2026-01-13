@@ -22,6 +22,11 @@ type PRStorage interface {
 	SetStatusMerged(ctx context.Context, prID string) (*domain.PullRequest, error)
 }
 
+const (
+	statusOpen = "OPEN"
+	limit      = 2
+)
+
 type Service struct {
 	log         *slog.Logger
 	userStorage UserStorage
@@ -42,12 +47,6 @@ func (s *Service) CreatePR(
 	authorID string,
 ) (*domain.PullRequest, error) {
 	const op = "service.pr.CreatePR"
-
-	// TODO: remove to service config
-	const (
-		status = "OPEN"
-		limit  = 2
-	)
 
 	log := s.log.With(
 		slog.String("op", op),
@@ -76,7 +75,7 @@ func (s *Service) CreatePR(
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	reviewers, err := s.userStorage.GetPotentialReviewersIDs(ctx, authorID, prID, limit)
+	reviewers, err := s.userStorage.GetPotentialReviewersIDs(ctx, authorID, authorID, limit)
 	if err != nil {
 		log.ErrorContext(ctx, "error finding potential reviewers", "error", err)
 		return nil, fmt.Errorf("%s: %w", op, err)
@@ -92,13 +91,13 @@ func (s *Service) CreatePR(
 		PullRequestID:     prID,
 		PullRequestName:   prName,
 		AuthorID:          authorID,
-		Status:            status,
+		Status:            statusOpen,
 		AssignedReviewers: reviewers,
 	}, nil
 }
 
 func (s *Service) SetStatusMerged(ctx context.Context, prID string) (*domain.PullRequest, error) {
-	const op = "service.SetStatusMerged"
+	const op = "service.pr.SetStatusMerged"
 
 	log := s.log.With(
 		slog.String("op", op),

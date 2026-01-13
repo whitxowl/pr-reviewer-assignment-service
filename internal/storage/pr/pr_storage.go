@@ -184,3 +184,20 @@ func (s *Storage) getReviewersByPRID(ctx context.Context, prID string) ([]string
 
 	return reviewers, nil
 }
+
+func (s *Storage) getPRAuthorID(ctx context.Context, prID string) (string, error) {
+	const op = "storage.pr.GetPRAuthorID"
+
+	const query = "SELECT author_id FROM pull_requests WHERE pull_request_id = $1"
+
+	var authorID string
+	err := s.Db.QueryRow(ctx, query, prID).Scan(&authorID)
+	if pg.IsNoRowsError(err) {
+		return "", fmt.Errorf("%s: %w", op, storageErr.ErrPRNotFound)
+	}
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	return authorID, nil
+}
