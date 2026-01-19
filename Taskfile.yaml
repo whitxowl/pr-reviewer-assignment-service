@@ -1,0 +1,22 @@
+version: "3"
+
+dotenv: ['.env']
+
+tasks:
+  migrate-up:
+    aliases:
+      - up
+    desc: "Apply all up migrations"
+    vars:
+      DSN: "postgres://{{.DB_USER}}:{{.DB_PASSWORD}}@{{.DB_HOST}}:{{.DB_PORT}}/{{.DB_NAME}}?sslmode={{.DB_SSLMODE}}"
+    cmds:
+      - goose -dir "{{.MIGRATIONS_DIR}}" postgres "{{.DSN}}" up
+
+  migrate-down:
+    aliases:
+      - down
+    desc: "Rollback one migration"
+    vars:
+      DSN: "postgres://{{.DB_USER}}:{{.DB_PASSWORD}}@{{.DB_HOST}}:{{.DB_PORT}}/{{.DB_NAME}}?sslmode={{.DB_SSLMODE}}"
+    cmds:
+      - goose -dir "{{.MIGRATIONS_DIR}}" postgres "{{.DSN}}" down
