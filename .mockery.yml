@@ -1,0 +1,21 @@
+all: false
+dir: "{{.InterfaceDir}}/mocks"
+filename: "{{.InterfaceName | lower}}_mock.go"
+structname: "Mock{{.InterfaceName}}"
+formatter: goimports
+pkgname: mocks
+template: testify
+
+packages:
+  github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr:
+    interfaces:
+      UserStorage:
+      PRStorage:
+  github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team:
+    interfaces:
+      TeamStorage:
+      UserStorage:
+  github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user:
+    interfaces:
+      UserStorage:
+      PRStorage:
