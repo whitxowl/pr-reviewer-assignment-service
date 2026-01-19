@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="61fb009f-6eda-4529-84d7-75fa114f3332" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,30 +50,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
-    &quot;Go Build.go build github.com/whitxowl/pr-reviewer-assignment-service.git/cmd/main (1).executor&quot;: &quot;Run&quot;,
-    &quot;Go Build.go build github.com/whitxowl/pr-reviewer-assignment-service.git/cmd/main.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.GoLinterPluginOnboardingV2&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/CHERT/GolandProjects/pr-reviewer-assignment-service&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Go Build.go build github.com/whitxowl/pr-reviewer-assignment-service.git/cmd/main (1).executor": "Run",
+    "Go Build.go build github.com/whitxowl/pr-reviewer-assignment-service.git/cmd/main.executor": "Run",
+    "Go Test.TestService_CreateTeam in github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team.executor": "Run",
+    "Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr.executor": "Run",
+    "Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team (1).executor": "Run",
+    "Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team.executor": "Run",
+    "Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user (1).executor": "Run",
+    "Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
+    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "C:/Users/CHERT/GolandProjects/pr-reviewer-assignment-service"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\CHERT\GolandProjects\pr-reviewer-assignment-service" />
@@ -82,12 +90,7 @@
       <recent name="C:\Users\CHERT\GolandProjects\pr-reviewer-assignment-service" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/whitxowl/pr-reviewer-assignment-service.git/cmd/main">
-    <configuration name="1_init_schema.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
-      <script-file value="$PROJECT_DIR$/migrations/1_init_schema.sql" />
-      <script-mode>FILE</script-mode>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="pr-reviewer-assignment-service" />
       <working_directory value="$PROJECT_DIR$" />
@@ -116,10 +119,57 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
+    <configuration name="go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pr-reviewer-assignment-service" />
+      <working_directory value="$PROJECT_DIR$/internal/service/pr" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team (1)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pr-reviewer-assignment-service" />
+      <working_directory value="$PROJECT_DIR$/internal/service/team" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user (1)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pr-reviewer-assignment-service" />
+      <working_directory value="$PROJECT_DIR$/internal/service/user" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="pr-reviewer-assignment-service" />
+      <working_directory value="$PROJECT_DIR$/internal/service/user" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/pr" />
+        <item itemvalue="Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user (1)" />
+        <item itemvalue="Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/team (1)" />
         <item itemvalue="Go Build.go build github.com/whitxowl/pr-reviewer-assignment-service.git/cmd/main" />
-        <item itemvalue="Database Script.1_init_schema.sql" />
+        <item itemvalue="Go Test.go test github.com/whitxowl/pr-reviewer-assignment-service.git/internal/service/user" />
       </list>
     </recent_temporary>
   </component>
